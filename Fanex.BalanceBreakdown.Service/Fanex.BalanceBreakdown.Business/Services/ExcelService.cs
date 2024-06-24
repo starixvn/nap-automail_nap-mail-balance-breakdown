@@ -56,6 +56,19 @@ public class ExcelServiceImp : ExcelService
                 TotalRM = total
             });
             counter++;
+
+            CollectGarbage();
+        }
+    }
+
+    private static void CollectGarbage()
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            GC.Collect(GC.MaxGeneration);
+            GC.WaitForPendingFinalizers();
+            GC.WaitForFullGCComplete();
+            GC.Collect();
         }
     }
 
@@ -105,7 +118,7 @@ public class ExcelServiceImp : ExcelService
 
         var endCol = sheet.Dimension.End.Column;
         sheet.Cells[sheet.Dimension.Address].AutoFitColumns(10, 50);
-        sheet.Columns[2].Width = 15;
+        sheet.Columns[2].Width = 25;
         sheet.View.FreezePanes(6, 1);
         for (var col = 2; col <= endCol; col++)
         {
