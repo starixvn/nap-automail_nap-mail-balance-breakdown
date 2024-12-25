@@ -13,17 +13,8 @@ public interface ExcelService
     void Export(bool isDaily);
 }
 
-public class ExcelServiceImp : ExcelService
+public class ExcelServiceImp(DataService dataService) : ExcelService
 {
-    private readonly DataService dataService;
-
-    public ExcelServiceImp(
-        DataService dataService
-    )
-    {
-        this.dataService = dataService;
-    }
-
     public void Export(bool isDaily)
     {
         var totalList = new List<TotalModel>();

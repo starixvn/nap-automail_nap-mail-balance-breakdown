@@ -3,42 +3,33 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Fanex.Data.SqlServer;
+using Fanex.Logging.Sentry.RavenClient;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
-builder.Services.AddControllers();
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-builder.Services.AddRazorPages();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.LoadConfiguration();
-builder.Services.SentryRegister();
-builder.Services.FanexDataRegister(builder.Configuration);
-builder.Services.InternalServiceRegister();
+services.AddControllers();
+services.AddRazorPages().AddRazorRuntimeCompilation();
+services.AddRazorPages();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+services.AddConfiguration();
+services.AddFanexLogSentry(configuration);
+services.AddFanexSql(configuration);
+services.AddInternalService();
 
-builder.Services.Configure<HostOptions>(options =>
+services.Configure<HostOptions>(options =>
 {
     options.ShutdownTimeout = TimeSpan.FromMinutes(2);
 });
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
 
 app.MapControllers();
-var serviceProvider = app.Services;
-var life = serviceProvider.GetService<IHostApplicationLifetime>();
-life.ApplicationStopped.Register(() =>
-{
-    Console.WriteLine($"Application is stopped at {DateTimeOffset.Now}");
-});
-life.ApplicationStopping.Register(() =>
-{
-    Console.WriteLine($"Application is being stopped at {DateTimeOffset.Now}");
-});
 
-app.Run();
+await app.RunAsync();

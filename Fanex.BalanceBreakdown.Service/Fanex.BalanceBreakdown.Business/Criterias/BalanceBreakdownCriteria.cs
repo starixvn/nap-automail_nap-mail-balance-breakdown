@@ -2,14 +2,9 @@
 
 namespace Fanex.BalanceBreakdown.Business.Criterias;
 
-public class BalanceBreakdownCriteria : CriteriaBase
+public class BalanceBreakdownCriteria(string spName) : CriteriaBase
 {
-    private string SpName { get; set; }
-
-    public BalanceBreakdownCriteria(string spName)
-    {
-        this.SpName = spName;
-    }
+    private string SpName { get; } = spName;
 
     public int PageIndex { get; set; }
 

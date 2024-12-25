@@ -6,15 +6,8 @@ namespace Fanex.BalanceBreakdown.Service.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ExecuteDailyController : ControllerBase
+public class ExecuteDailyController(MainService service) : ControllerBase
 {
-    private readonly MainService service;
-
-    public ExecuteDailyController(MainService service)
-    {
-        this.service = service;
-    }
-
     [HttpGet]
     public JobMessage Get()
     {
