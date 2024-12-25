@@ -1,5 +1,6 @@
 ﻿using Fanex.BalanceBreakdown.Business.Models;
 using OfficeOpenXml;
+using Olympus.Diagnostic;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -54,13 +55,8 @@ public class ExcelServiceImp(DataService dataService) : ExcelService
 
     private static void CollectGarbage()
     {
-        for (var i = 0; i < 10; i++)
-        {
-            GC.Collect(GC.MaxGeneration);
-            GC.WaitForPendingFinalizers();
-            GC.WaitForFullGCComplete();
-            GC.Collect();
-        }
+        var gc = GarbageCollector.CollectExtremely();
+        Console.WriteLine(gc);
     }
 
     private static void RenderBallDiff(bool isDaily, ExcelPackage excelPackage, List<TotalModel> totalList, ExcelWorksheet formatTpl)

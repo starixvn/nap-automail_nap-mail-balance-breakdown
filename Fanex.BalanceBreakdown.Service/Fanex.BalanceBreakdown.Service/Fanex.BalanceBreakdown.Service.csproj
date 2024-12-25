@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="C:\Users\robert.tran\.nuget\packages\fanex.mailstation\2.1.2\contentFiles\any\net9.0\app.config.transform" />
+    <Content Remove="C:\Users\robert.tran\.nuget\packages\fanex.mailstation\2.1.2\contentFiles\any\net9.0\web.config.transform" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="App_Data\DBACC.bodb_Report.wsv_nap.xml" />
     <None Remove="Templates\Template.xlsx" />
   </ItemGroup>

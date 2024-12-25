@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<DataService, DataServiceImp>();
         services.AddSingleton<MainService, MainServiceImp>();
         services.AddSingleton<ExcelService, ExcelServiceImp>();
+        services.AddSingleton<DeleteFilesService, DeleteFilesServiceImp>();
         services.AddSingleton<ZipService, ZipServiceImp>();
 
         services.AddSingleton<MailService, MailServiceImp>();
