@@ -1,11 +1,11 @@
-﻿using Fanex.BalanceBreakdown.Business.Models;
-using Fanex.MailDelivery.Core.Models;
-using RazorEngine;
-using RazorEngine.Templating;
+﻿using Fanex.MailDelivery.Core.Models;
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 
 namespace Fanex.BalanceBreakdown.Business.Services;
+
+using RazorEngineCore;
 
 public interface MailService
 {
@@ -14,6 +14,8 @@ public interface MailService
 
 public class MailServiceImp : MailService
 {
+    private static readonly ConcurrentDictionary<int, IRazorEngineCompiledTemplate> CompiledTemplateCache = new();
+
     public Mail SendMail(bool isDaily)
     {
         var subject = isDaily
@@ -29,20 +31,18 @@ public class MailServiceImp : MailService
         return mail;
     }
 
-    private string LoadBody()
+    private static string LoadBody()
     {
-        var template = File.ReadAllText(@"Templates/EmailTemplate-URL.cshtml");
-        var pathDownloadFile = AppConfigService.Config.DownloadFileUrl;
-        var mailDto = new MailDto
+        const string templatePath = "Templates/EmailTemplate-URL.cshtml";
+        var hashCode = templatePath.GetHashCode();
+        var compiledTemplate = CompiledTemplateCache.GetOrAdd(hashCode, _ =>
         {
-            PathDownloadFile = pathDownloadFile
-        };
-        var tuple = new Tuple<MailDto>(mailDto);
-        const string tplKey = "BalanceBreakdown-Template-URL";
-        var result = Engine.Razor.IsTemplateCached(tplKey, null)
-            ? Engine.Razor.Run(tplKey, null, tuple)
-            : Engine.Razor.RunCompile(template, tplKey, model: tuple);
+            var template = File.ReadAllText(templatePath);
+            var razorEngine = new RazorEngine();
+            return razorEngine.Compile(template);
+        });
 
-        return result;
+        var pathDownloadFile = AppConfigService.Config.DownloadFileUrl;
+        return compiledTemplate.Run(pathDownloadFile);
     }
 }

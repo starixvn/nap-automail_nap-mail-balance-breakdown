@@ -1,9 +1,4 @@
-﻿
-@using Fanex.BalanceBreakdown.Business.Models;
-@{
-    MailDto mailDto = Model.Item1;
-}
-<div>
+﻿<div>
     
     Dear Users, <br /><br />
 
@@ -11,7 +6,7 @@
 
     Please kindly access this link to download the report files.<br /> <br />
 
-    <a href="@mailDto.PathDownloadFile" target="_blank">Nap-Accounting Report</a> <br /><br />
+    <a href="@Model" target="_blank">Nap-Accounting Report</a> <br /><br />
 
     Your report is placed at Nap Accounting Report/Misc/Auto-Generated Reports.<br /> <br />
 

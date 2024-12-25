@@ -11,27 +11,14 @@ public interface MainService
     JobMessage Execute(bool isDaily);
 }
 
-public class MainServiceImp : MainService
+public class MainServiceImp(
+    Log log,
+    MailService mailService,
+    ExcelService excelService,
+    ZipService zipService)
+    : MainService
 {
-    private readonly Log log;
-    private readonly MailService mailService;
-    private readonly ExcelService excelService;
-    private readonly ZipService zipService;
-
-    private static List<DateTime> CounterList { get; set; } = [];
-
-    public MainServiceImp(
-        Log log,
-        MailService mailService,
-        ExcelService excelService,
-        ZipService zipService)
-
-    {
-        this.log = log;
-        this.mailService = mailService;
-        this.excelService = excelService;
-        this.zipService = zipService;
-    }
+    private static List<DateTime> CounterList { get; } = [];
 
     public JobMessage Execute(bool isDaily)
     {

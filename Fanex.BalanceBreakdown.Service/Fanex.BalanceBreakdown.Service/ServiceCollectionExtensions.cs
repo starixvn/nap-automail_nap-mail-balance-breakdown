@@ -1,20 +1,12 @@
 ﻿using Fanex.BalanceBreakdown.Business.Models;
 using Fanex.BalanceBreakdown.Business.Services;
-using Fanex.Data;
 using Fanex.Data.Repository;
-using Fanex.Data.SqlServer;
-using Fanex.Logging;
-using Fanex.Logging.Sentry.RavenClient;
 using Fanex.MailDelivery.Client;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using OfficeOpenXml;
-using SharpRaven;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Fanex.BalanceBreakdown.Service;
 
@@ -22,46 +14,14 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection Services { get; set; }
 
-    public static void LoadConfiguration(this IServiceCollection services)
+    public static void AddConfiguration(this IServiceCollection services)
     {
         Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         var text = File.ReadAllText("appsettings.json");
         AppConfigService.Config = JsonConvert.DeserializeObject<ConfigSettingModel>(text);
     }
 
-    public static void SentryRegister(this IServiceCollection services)
-    {
-        var sentry = new SentryLogging(new SentryEngineOptions
-        {
-            Dsn = new Dsn(AppConfigService.Config.SentryClientKey)
-        });
-
-        LogManager
-            .SetDefaultLogCategory(AppConfigService.Config.CategorySentryLog)
-            .Use(new List<ILogEngine>
-            {
-                sentry
-            });
-    }
-
-    public static void FanexDataRegister(this IServiceCollection services, IConfiguration config)
-    {
-        var connections = config.GetSection("ConnectionStrings")
-            .GetChildren()
-            .ToDictionary(
-                x => x.Key,
-                y => new ConnectionConfiguration(y.Key, y.Value)
-            );
-
-        DbSettingProviderManager
-            .StartNewSession()
-            .Use(connections)
-            .WithSqlServer()
-            .UseDefaultDbSettingProvider(config.GetSection("StoredProcedurePath").Value)
-            .Run();
-    }
-
-    public static void InternalServiceRegister(this IServiceCollection services)
+    public static void AddInternalService(this IServiceCollection services)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 

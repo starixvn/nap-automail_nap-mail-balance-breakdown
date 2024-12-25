@@ -4,7 +4,7 @@ public class ConfigSettingModel
 {
     public string SentryClientKey { get; set; }
 
-    public string CategorySentryLog { get; set; }
+    public string LogCategory { get; set; }
 
     public int PageSize { get; set; }
 
