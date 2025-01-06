@@ -2,7 +2,6 @@
 using Fanex.MailDelivery.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Fanex.BalanceBreakdown.Business.Services;
 
@@ -61,9 +60,9 @@ public class MainServiceImp(
     private ExecuteResultModel SendNotification(bool isDaily)
     {
         excelService.Export(isDaily);
-        zipService.ZipFile(isDaily);
+        //zipService.ZipFile(isDaily);
         var folder = isDaily ? "InternalDaily" : "InternalMonthly";
-        Directory.Delete($"{AppConfigService.Config.Path}/{folder}", true);
+        // Directory.Delete($"{AppConfigService.Config.Path}/{folder}", true);
         var mail = mailService.SendMail(isDaily);
         return new ExecuteResultModel
         {

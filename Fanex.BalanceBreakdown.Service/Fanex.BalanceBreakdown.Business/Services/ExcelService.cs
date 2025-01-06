@@ -37,8 +37,8 @@ public class ExcelServiceImp(DataService dataService) : ExcelService
             }
 
             var fileName = isDaily
-                ? $"Daily Balance Breakdown {counter} for {DateTime.Today:dd-MM-yyyy}.xlsx"
-                : $"Monthly Balance Breakdown {counter} for {DateTime.Today.AddMonths(-1):yyyy-MM}.xlsx";
+                ? $"{DateTime.Today:yyyy-MM-dd}-Daily Balance Breakdown-{counter}.xlsx"
+                : $"{DateTime.Today.AddMonths(-1):yyyy-MM}-Monthly Balance Breakdown-{counter}.xlsx";
 
             SaveExcelFile(isDaily, excelPackage, fileName);
 
@@ -130,8 +130,8 @@ public class ExcelServiceImp(DataService dataService) : ExcelService
     {
         excelPackage.Workbook.Worksheets.Delete("Format");
         var name = $"{fileName}";
-        var folder = isDaily ? "InternalDaily" : "InternalMonthly";
-        var path = $"{AppConfigService.Config.Path}/{folder}";
+        var folder = isDaily ? "Daily_Balance_Breakdown" : "Monthly_Balance_Breakdown";
+        var path = $"{AppConfigService.Config.Path}/{folder}/{DateTime.Today:yyyyMM01}";
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
