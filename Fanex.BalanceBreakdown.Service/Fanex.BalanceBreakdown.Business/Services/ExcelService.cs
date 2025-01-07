@@ -1,5 +1,6 @@
 ﻿using Fanex.BalanceBreakdown.Business.Models;
 using OfficeOpenXml;
+using Olympus.Diagnostic;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,8 +37,8 @@ public class ExcelServiceImp(DataService dataService) : ExcelService
             }
 
             var fileName = isDaily
-                ? $"Daily Balance Breakdown {counter} for {DateTime.Today:dd-MM-yyyy}.xlsx"
-                : $"Monthly Balance Breakdown {counter} for {DateTime.Today.AddMonths(-1):yyyy-MM}.xlsx";
+                ? $"{DateTime.Today:yyyy-MM-dd}-Daily Balance Breakdown-{counter}.xlsx"
+                : $"{DateTime.Today.AddMonths(-1):yyyy-MM}-Monthly Balance Breakdown-{counter}.xlsx";
 
             SaveExcelFile(isDaily, excelPackage, fileName);
 
@@ -54,13 +55,8 @@ public class ExcelServiceImp(DataService dataService) : ExcelService
 
     private static void CollectGarbage()
     {
-        for (var i = 0; i < 10; i++)
-        {
-            GC.Collect(GC.MaxGeneration);
-            GC.WaitForPendingFinalizers();
-            GC.WaitForFullGCComplete();
-            GC.Collect();
-        }
+        var gc = GarbageCollector.CollectExtremely();
+        Console.WriteLine(gc);
     }
 
     private static void RenderBallDiff(bool isDaily, ExcelPackage excelPackage, List<TotalModel> totalList, ExcelWorksheet formatTpl)
@@ -134,8 +130,8 @@ public class ExcelServiceImp(DataService dataService) : ExcelService
     {
         excelPackage.Workbook.Worksheets.Delete("Format");
         var name = $"{fileName}";
-        var folder = isDaily ? "InternalDaily" : "InternalMonthly";
-        var path = $"{AppConfigService.Config.Path}/{folder}";
+        var folder = isDaily ? "Daily_Balance_Breakdown" : "Monthly_Balance_Breakdown";
+        var path = $"{AppConfigService.Config.Path}/{folder}/{DateTime.Today:yyyyMM01}";
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
