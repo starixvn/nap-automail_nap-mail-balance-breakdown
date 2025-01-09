@@ -1,10 +1,8 @@
 using Fanex.BalanceBreakdown.Service;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
 using Fanex.Data.SqlServer;
 using Fanex.Logging.Sentry.RavenClient;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -20,15 +18,10 @@ services.AddFanexLogSentry(configuration);
 services.AddFanexSql(configuration);
 services.AddInternalService();
 
-services.Configure<HostOptions>(options =>
-{
-    options.ShutdownTimeout = TimeSpan.FromMinutes(2);
-});
-
 var app = builder.Build();
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
 
